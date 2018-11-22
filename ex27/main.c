@@ -1,34 +1,40 @@
-#include "ft.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: judumay <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/11/05 15:01:51 by judumay           #+#    #+#             */
+/*   Updated: 2018/11/08 12:50:16 by judumay          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-int		ft_display_file(char argv[1])
+#include <unistd.h>
+#include <fcntl.h>
+
+void	ft_display_file(int fd)
 {
-	int fd;
-	int ret;
-	char buf [BUF_SIZE + 1];
-	
-	fd = open(argv, O_RDONLY);
-	if (fd == -1)
-		return (0);
-	while ((ret = read(fd, buf, BUF_SIZE)))
-	{
-		buf[ret] = '\0';
-		ft_putstr(buf);
-	}
-	close(fd);
-	return (0);
+	char	buffer;
+
+	while (read(fd, &buffer, 1) != 0)
+		write(1, &buffer, 1);
 }
 
 int		main(int argc, char **argv)
 {
-	(void)argv;
+	int		fd;
+
 	if (argc != 2)
 	{
 		if (argc > 2)
-			ft_putstr("Too many arguments.\n");
+			write(2, "Too many arguments.\n", 20);
 		if (argc < 2)
-			ft_putstr("File name missing.\n");
-		return (0);
+			write(2, "File name missing.\n", 19);
+		return (1);
 	}
-	ft_display_file(argv[1]);
+	fd = open(argv[1], O_RDONLY);
+	ft_display_file(fd);
+	close(fd);
 	return (0);
 }
